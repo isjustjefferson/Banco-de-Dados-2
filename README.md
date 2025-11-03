@@ -1,69 +1,46 @@
-# Banco-de-Dados-2
+# Projeto Julius Finance (Banco de Dados 2)
+
 Repositório referente as atividades da disciplina de Banco de Dados 2 no curso de Análise e Desenvolvimento de Sistemas no IFPE - Campus Paulista, ministrada pelo prof. Antônio.
 
-Para testar o projeto, siga os seguintes passos:
+Este é um projeto de CLI (Command Line Interface) para gerenciamento de finanças pessoais, utilizando Python, SQLAlchemy e MySQL.
 
-1 - Certifique-se que está utilizando uma versão Python 3.10+:
+### Tecnologias Utilizadas
+* Python 3.10+
+* SQLAlchemy (ORM)
+* MySQL (Banco de Dados Relacional)
+* mysql-connector-python (Driver)
+* bcrypt (Hash de Senhas)
 
-    python --version
-    
--------------------------------------------------
+---
 
-Caso seja usuário Windows:
+## Requisitos
+Para rodar este projeto, você precisará ter instalados:
+1.  [Python 3.10+](https://www.python.org/downloads/)
+2.  [Git](https://git-scm.com/downloads/)
+3.  [MySQL Server](https://dev.mysql.com/downloads/installer/) (Recomendamos o MySQL Workbench para facilitar)
 
-2 - Instale o MySQL Server no link: 
+---
 
-    https://dev.mysql.com/downloads/installer/
+## 1. Configuração do Banco de Dados
 
-3 - No MySQL Workbench, execute o seguinte script: 
-    
-    CREATE DATABASE julius_finance;
-    CREATE USER 'julius_user'@'localhost' IDENTIFIED BY 'senha_forte';
-    GRANT ALL PRIVILEGES ON julius_finance.* TO 'julius_user'@'localhost';
-    FLUSH PRIVILEGES;
+Antes de rodar o script, você precisa criar o banco de dados e o usuário que a aplicação irá usar.
 
-4 - Instale o pacote:
+1.  Abra seu cliente MySQL (MySQL Workbench, DBeaver, etc.) como **usuário root**.
+2.  Execute o script SQL abaixo. Ele fará o seguinte:
+    * Cria o banco `julius_finance`.
+    * Cria o usuário `julius_user` (com a senha `senha123`).
+    * Dá as permissões que a aplicação precisa (incluindo para criar Procedures e Triggers).
 
-    pip install SQLAlchemy PyMySQL
+```sql
+CREATE DATABASE julius_finance;
 
-Caso ocorra algum erro de permissão, tente: 
+CREATE USER 'julius_user'@'localhost' IDENTIFIED BY 'senha123';
 
-    pip install SQLAlchemy PyMySQL --user
+/* Dá permissões básicas */
+GRANT ALL PRIVILEGES ON julius_finance.* TO 'julius_user'@'localhost';
 
--------------------------------------------------
+/* Dá permissões para criar e executar Procedures e Triggers (Requisito da Atividade) */
+GRANT CREATE ROUTINE, ALTER ROUTINE ON julius_finance.* TO 'julius_user'@'localhost';
+GRANT TRIGGER ON julius_finance.* TO 'julius_user'@'localhost';
 
-Caso seja usuário Linux:
-
-2 - Instale o MySQL Server:
-
-    sudo apt update
-    sudo apt install mysql-server
-
-3 - Ative o MySQL Server: 
-
-    sudo systemctl enable mysql
-
-4 - Configure o MySQL:
-
-    #use y para todos os pedidos
-    sudo mysql_secure_installation
-
-5 - Acesse o MySQL: 
-
-    sudo mysql -u root -p
-
-6 - Crie o banco de dados (o script é o mesmo que o do usuário windows):
-
-    CREATE DATABASE julius_finance;
-    CREATE USER 'julius_user'@'localhost' IDENTIFIED BY 'senha_forte';
-    GRANT ALL PRIVILEGES ON julius_finance.* TO 'julius_user'@'localhost';
-    FLUSH PRIVILEGES;
-    EXIT;
-
-7 - Instale dependências Python:
-
-    pip install sqlalchemy pymysql
-
-Caso apareça um erro de permissão (como PEP 668) use o parâmetro "--break-system-packages": 
-
-    pip install SQLAlchemy PyMySQL --break-system-packages
+FLUSH PRIVILEGES;
