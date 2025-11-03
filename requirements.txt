@@ -1,0 +1,3 @@
+SQLAlchemy
+mysql-connector-python
+bcrypt
