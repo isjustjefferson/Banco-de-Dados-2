@@ -1,33 +1,32 @@
-# database/functions.py
 
-from .connection import session # Nossa sessão do banco
+from .connection import session 
 from .models import Usuario, Conta, Categoria, Transacao, Tag
-from utils.helpers import hash_senha, verificar_senha # Nossas funções de senha
+from utils.helpers import hash_senha, verificar_senha 
 from sqlalchemy.orm import joinedload
 from sqlalchemy import func
 import datetime
 
-# --- Funções CRUD (Create, Read, Update, Delete) ---
+
 
 def criar_usuario(nome, email, senha_plana):
     """Cria um novo usuário com senha hasheada."""
     try:
-        # Verifica se o e-mail já existe
+        
         if session.query(Usuario).filter_by(email=email).first():
             print(f"Erro: E-mail '{email}' já cadastrado.")
             return None
             
-        # Cria o hash da senha
+        
         senha_hasheada = hash_senha(senha_plana)
         
-        # Cria o novo objeto Usuario
+        
         novo_usuario = Usuario(
             nome=nome,
             email=email,
             senha_hash=senha_hasheada
         )
         
-        # Adiciona à sessão e commita
+        
         session.add(novo_usuario)
         session.commit()
         
@@ -35,7 +34,7 @@ def criar_usuario(nome, email, senha_plana):
         return novo_usuario
         
     except Exception as e:
-        session.rollback() # Desfaz a transação em caso de erro
+        session.rollback() 
         print(f"Erro ao criar usuário: {e}")
         return None
 
@@ -73,7 +72,7 @@ def criar_categoria(nome, tipo):
 def adicionar_transacao(id_conta, id_categoria, valor, descricao, data_str=None):
     """Adiciona uma nova transação (receita ou despesa)."""
     try:
-        # Converte a string da data para objeto date
+        
         if data_str:
             data = datetime.datetime.strptime(data_str, '%Y-%m-%d').date()
         else:
@@ -101,12 +100,12 @@ def calcular_balanco_usuario(id_usuario):
     de todas as suas contas e o valor de todas as transações.
     """
     try:
-        # 1. Soma todos os saldos iniciais das contas do usuário
+        
         saldo_inicial_total = session.query(func.sum(Conta.saldo_inicial))\
                                      .filter(Conta.id_usuario == id_usuario)\
                                      .scalar() or 0.0
 
-        # 2. Soma todas as transações (positivas e negativas) das contas desse usuário
+       
         soma_transacoes = session.query(func.sum(Transacao.valor))\
                                  .join(Conta)\
                                  .filter(Conta.id_usuario == id_usuario)\
@@ -121,6 +120,6 @@ def calcular_balanco_usuario(id_usuario):
         print(f"Erro ao calcular balanço: {e}")
         return None
 
-# Função para fechar a sessão (boa prática)
+
 def fechar_sessao():
     session.remove()

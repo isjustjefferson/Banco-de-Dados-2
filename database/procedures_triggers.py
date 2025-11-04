@@ -1,9 +1,7 @@
-# database/procedures_triggers.py
-
 from sqlalchemy import text
 from .connection import engine
 
-# --- SQL para criar Tabelas de Log/Backup (necessárias para os triggers) ---
+
 
 SQL_CREATE_LOG_USUARIOS = """
 CREATE TABLE IF NOT EXISTS log_atualizacao_usuarios (
@@ -27,9 +25,7 @@ CREATE TABLE IF NOT EXISTS contas_backup (
 """
 
 
-# --- SQL para os 4 Stored Procedures ---
 
-# SP 1: Atualizar o valor de uma meta
 SQL_SP_ATUALIZAR_META = """
 CREATE PROCEDURE sp_atualizar_saldo_meta(IN meta_id INT, IN valor_adicionado FLOAT)
 BEGIN
@@ -39,7 +35,7 @@ BEGIN
 END
 """
 
-# SP 2: Calcular gastos totais por categoria em um mês/ano
+
 SQL_SP_GASTOS_CATEGORIA = """
 CREATE PROCEDURE sp_calcular_gastos_categoria(
     IN p_id_usuario INT, 
@@ -63,7 +59,6 @@ BEGIN
 END
 """
 
-# SP 3: Obter todas as transações de uma conta específica
 SQL_SP_OBTER_TRANSACOES_CONTA = """
 CREATE PROCEDURE sp_obter_transacoes_conta(IN p_id_conta INT)
 BEGIN
@@ -80,7 +75,7 @@ BEGIN
 END
 """
 
-# SP 4: Registrar uma transferência entre contas
+
 SQL_SP_REGISTRAR_TRANSFERENCIA = """
 CREATE PROCEDURE sp_registrar_transferencia(
     IN p_id_conta_origem INT,
@@ -118,9 +113,8 @@ END
 """
 
 
-# --- SQL para os 3 Triggers ---
 
-# Trigger 1: Logar mudança de e-mail de usuário
+
 SQL_TR_LOG_UPDATE_USUARIO = """
 CREATE TRIGGER tr_antes_atualizar_email_usuario
 BEFORE UPDATE ON usuarios
@@ -133,7 +127,7 @@ BEGIN
 END
 """
 
-# Trigger 2: Fazer backup de conta antes de deletar
+
 SQL_TR_BACKUP_DELETE_CONTA = """
 CREATE TRIGGER tr_depois_deletar_conta
 AFTER DELETE ON contas
@@ -144,7 +138,7 @@ BEGIN
 END
 """
 
-# Trigger 3: Impedir valor inválido na transação (Despesa > 0 ou Receita < 0)
+
 SQL_TR_VALIDAR_VALOR_TRANSACAO = """
 CREATE TRIGGER tr_antes_inserir_transacao
 BEFORE INSERT ON transacoes
@@ -165,7 +159,7 @@ END
 """
 
 
-# --- Função Python para executar todo o SQL ---
+
 
 def criar_procedures_e_triggers():
     """
@@ -188,9 +182,7 @@ def criar_procedures_e_triggers():
             print("Iniciando criação de procedures e triggers...")
             
             for i, sql in enumerate(comandos_sql):
-                # O MySQL não gosta de 'CREATE PROCEDURE'/'TRIGGER' se já existir.
-                # Vamos remover antes de tentar criar.
-                # Isso é uma forma simples de garantir que o script rode várias vezes.
+
                 try:
                     if "PROCEDURE" in sql:
                         proc_name = sql.split(" ")[2].split("(")[0]
@@ -199,10 +191,10 @@ def criar_procedures_e_triggers():
                         trigger_name = sql.split(" ")[2]
                         connection.execute(text(f"DROP TRIGGER IF EXISTS {trigger_name}"))
                 except Exception as e:
-                    # Ignora erro se o item não existir (que é o esperado)
+
                     pass 
                 
-                # Executa o comando de criação
+
                 connection.execute(text(sql))
                 print(f"  -> Comando {i+1}/{len(comandos_sql)} executado com sucesso.")
 
