@@ -30,6 +30,8 @@ def criar_usuario(nome, email, senha_plana):
         session.add(novo_usuario)
         session.commit()
         
+        criar_conta(id_usuario=novo_usuario.id_usuario, nome_conta="contaBase", tipo_conta="corrente")
+        
         print(f"Usuário '{nome}' criado com sucesso (ID: {novo_usuario.id_usuario}).")
         return novo_usuario
         

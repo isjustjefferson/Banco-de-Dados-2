@@ -60,20 +60,10 @@ def seed_database():
                     tipo_conta="Corrente",
                     saldo_inicial=50.0
                 )
-                
-                conta2 = criar_conta(
-                    id_usuario=usuario_teste.id_usuario,
-                    nome_conta="Banco Principal",
-                    tipo_conta="Corrente",
-                    saldo_inicial=1000.0
-                )
-                
-
-                if conta1 and conta2:
-
-                    adicionar_transacao(conta1.id_conta, 1, -15.50, "Lanche", "2025-11-01")
-                    adicionar_transacao(conta2.id_conta, 7, 3000.00, "Salário", "2025-11-05")
-                    print("Usuário de teste e dados iniciais criados.")
+            if conta1:
+                # (ID da Categoria 1 = Alimentação, 7 = Salário)
+                adicionar_transacao(conta1.id_conta, 1, -15.50, "Lanche", "2025-11-01")
+                print("Usuário de testes e dados de testes criados")
         else:
             print("Usuários já existem. Pulando...")
 
